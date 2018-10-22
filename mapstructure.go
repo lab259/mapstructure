@@ -206,7 +206,7 @@ func NewDecoder(config *DecoderConfig) (*Decoder, error) {
 	}
 
 	if config.TagName == "" {
-		config.TagName = "mapstructure"
+		config.TagName = "json"
 	}
 
 	result := &Decoder{
@@ -689,10 +689,10 @@ func (d *Decoder) decodeMapFromStruct(name string, dataVal reflect.Value, val re
 			keyName = tagParts[0]
 		}
 
-		// If "squash" is specified in the tag, we squash the field down.
+		// If "inline" is specified in the tag, we squash the field down.
 		squash := false
 		for _, tag := range tagParts[1:] {
-			if tag == "squash" {
+			if tag == "inline" {
 				squash = true
 				break
 			}
@@ -1016,11 +1016,11 @@ func (d *Decoder) decodeStructFromMap(name string, dataVal, val reflect.Value) e
 			fieldType := structType.Field(i)
 			fieldKind := fieldType.Type.Kind()
 
-			// If "squash" is specified in the tag, we squash the field down.
+			// If "inline" is specified in the tag, we squash the field down.
 			squash := false
 			tagParts := strings.Split(fieldType.Tag.Get(d.config.TagName), ",")
 			for _, tag := range tagParts[1:] {
-				if tag == "squash" {
+				if tag == "inline" {
 					squash = true
 					break
 				}
